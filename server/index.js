@@ -1,5 +1,8 @@
 import express from 'express';
 import authRoutes from './routes/auth.js';
+import { seed } from './seed.js';
+
+seed();
 
 const app = express();
 
