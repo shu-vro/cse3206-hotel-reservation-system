@@ -1,8 +1,15 @@
+import { api, clearSession, session } from './api.js';
+import loginPage from './pages/login.js';
+
 const app = document.querySelector('#app');
 
 const routes = {
-  '/': () => placeholder('Rooms', 'Room catalogue lands here once the rooms module is ready.'),
-  '/bookings': () => placeholder('My bookings', 'Booking list lands here once the booking module is ready.')
+  '/': { render: () => placeholder('Rooms', 'Room catalogue lands here once the rooms module is ready.') },
+  '/bookings': {
+    auth: true,
+    render: () => placeholder('My bookings', 'Booking list lands here once the booking module is ready.')
+  },
+  '/login': { render: loginPage, guestOnly: true }
 };
 
 function placeholder(title, note) {
@@ -12,22 +19,53 @@ function placeholder(title, note) {
   return el;
 }
 
-function shell() {
+function navLink(href, label, path) {
+  return `<a href="#${href}" class="${path === href ? 'active' : ''}">${label}</a>`;
+}
+
+async function logout() {
+  try {
+    await api('/auth/logout', { method: 'POST' });
+  } finally {
+    clearSession();
+    location.hash = '#/login';
+    render();
+  }
+}
+
+function render() {
   const path = location.hash.slice(1) || '/';
+  const { user } = session();
+  const route = routes[path] || routes['/'];
+
+  if (route.auth && !user) {
+    location.hash = '#/login';
+    return;
+  }
+  if (route.guestOnly && user) {
+    location.hash = '#/';
+    return;
+  }
+
   app.innerHTML = `
     <header class="topbar">
       <a class="brand" href="#/">Rajshahi Grand</a>
       <nav>
-        <a href="#/" class="${path === '/' ? 'active' : ''}">Rooms</a>
-        <a href="#/bookings" class="${path === '/bookings' ? 'active' : ''}">My bookings</a>
+        ${navLink('/', 'Rooms', path)}
+        ${user ? navLink('/bookings', 'My bookings', path) : ''}
+        ${
+          user
+            ? `<span class="badge">${user.name}</span><button class="ghost" id="logout">Log out</button>`
+            : navLink('/login', 'Log in', path)
+        }
       </nav>
     </header>
     <main id="view"></main>
   `;
-  const view = app.querySelector('#view');
-  const render = routes[path] || routes['/'];
-  view.append(render());
+
+  app.querySelector('#logout')?.addEventListener('click', logout);
+  app.querySelector('#view').append(route.render());
 }
 
-window.addEventListener('hashchange', shell);
-shell();
+window.addEventListener('hashchange', render);
+render();
