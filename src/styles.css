@@ -263,3 +263,38 @@ button.ghost:active {
   background: var(--teal);
   color: #f3fbf9;
 }
+
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.room-card {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.room-card h2 {
+  margin: 0;
+}
+
+.room-card p {
+  margin: 0;
+}
+
+.room-card a {
+  text-decoration: none;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  font-size: 0.9rem;
+  padding: 8px 0;
+}
