@@ -1,10 +1,11 @@
 import { api, clearSession, session } from './api.js';
 import loginPage from './pages/login.js';
+import roomsPage from './pages/rooms.js';
 
 const app = document.querySelector('#app');
 
 const routes = {
-  '/': { render: () => placeholder('Rooms', 'Room catalogue lands here once the rooms module is ready.') },
+  '/': { render: roomsPage },
   '/bookings': {
     auth: true,
     render: () => placeholder('My bookings', 'Booking list lands here once the booking module is ready.')
