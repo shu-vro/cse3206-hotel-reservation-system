@@ -9,7 +9,7 @@
     "dev:web": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test server/"
+    "test": "node --test server/*.test.js"
   },
   "dependencies": {
     "express": "^5.2.1"
