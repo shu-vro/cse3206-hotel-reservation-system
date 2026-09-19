@@ -287,3 +287,14 @@ button.ghost:active {
 .room-card a {
   text-decoration: none;
 }
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  font-size: 0.9rem;
+  padding: 8px 0;
+}

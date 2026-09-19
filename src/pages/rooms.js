@@ -5,7 +5,7 @@ const money = (value) => `Tk ${Number(value).toLocaleString('en-BD')}`;
 export default function roomsPage() {
   const page = document.createElement('div');
   const { user } = session();
-  const filters = { type: '', guests: '', max_price: '' };
+  const filters = { type: '', guests: '', max_price: '', include_archived: '' };
   let editing = null;
 
   page.innerHTML = `
@@ -28,6 +28,14 @@ export default function roomsPage() {
         <label for="max_price">Max per night</label>
         <input id="max_price" name="max_price" type="number" min="0" step="100" placeholder="Any" />
       </div>
+      ${
+        user?.role === 'admin'
+          ? `<div class="field">
+               <label for="archived">Archived</label>
+               <label class="check"><input id="archived" name="include_archived" type="checkbox" value="true" /> show</label>
+             </div>`
+          : ''
+      }
       <button type="submit">Filter</button>
       <button type="button" class="ghost" id="clear">Clear</button>
       ${user?.role === 'admin' ? '<button type="button" id="add" class="primary">Add room</button>' : ''}
@@ -128,14 +136,14 @@ export default function roomsPage() {
       <article class="card room-card">
         <div class="row" style="justify-content:space-between">
           <h2>Room ${room.number}</h2>
-          <span class="badge teal">${room.type}</span>
+          <span class="badge ${room.active ? 'teal' : 'clay'}">${room.active ? room.type : 'Archived'}</span>
         </div>
         <p class="muted">${room.description || 'No description yet.'}</p>
         <p class="mono">Sleeps ${room.capacity} · <strong>${money(room.price_per_night)}</strong> / night</p>
         <div class="row">
           <a href="#/book/${room.id}"><button type="button" class="primary">Book</button></a>
           ${
-            user?.role === 'admin'
+            user?.role === 'admin' && room.active
               ? `<button type="button" class="ghost" data-edit="${room.id}">Edit</button>
                  <button type="button" class="ghost" data-archive="${room.id}">Archive</button>`
               : ''
