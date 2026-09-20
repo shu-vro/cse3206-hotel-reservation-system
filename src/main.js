@@ -3,12 +3,14 @@ import loginPage from './pages/login.js';
 import roomsPage from './pages/rooms.js';
 import bookingPage from './pages/booking.js';
 import bookingsPage from './pages/bookings.js';
+import adminPage from './pages/admin.js';
 
 const app = document.querySelector('#app');
 
 const routes = {
   '/': { render: roomsPage },
   '/bookings': { auth: true, render: bookingsPage },
+  '/admin': { auth: true, admin: true, render: adminPage },
   '/login': { render: loginPage, guestOnly: true }
 };
 
@@ -50,6 +52,10 @@ function render() {
     location.hash = '#/login';
     return;
   }
+  if (route.admin && user?.role !== 'admin') {
+    location.hash = '#/';
+    return;
+  }
   if (route.guestOnly && user) {
     location.hash = '#/';
     return;
@@ -61,6 +67,7 @@ function render() {
       <nav>
         ${navLink('/', 'Rooms', path)}
         ${user ? navLink('/bookings', 'My bookings', path) : ''}
+        ${user?.role === 'admin' ? navLink('/admin', 'Front desk', path) : ''}
         ${menu(user, path)}
       </nav>
     </header>

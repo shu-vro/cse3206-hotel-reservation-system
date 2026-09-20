@@ -330,3 +330,26 @@ td {
 tbody tr:last-child td {
   border-bottom: none;
 }
+
+.stats {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.stat {
+  display: grid;
+  gap: 2px;
+  background: var(--paper-dim);
+}
+
+.stat strong {
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.tabs button[aria-pressed='true'],
+#filters button[aria-pressed='true'] {
+  background: var(--teal);
+  color: #f3fbf9;
+}
