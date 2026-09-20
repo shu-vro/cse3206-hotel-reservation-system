@@ -3,6 +3,12 @@ import { api } from '../api.js';
 const money = (value) => `Tk ${Number(value).toLocaleString('en-BD')}`;
 const today = () => new Date().toISOString().slice(0, 10);
 
+function dayAfter(date) {
+  const next = new Date(`${date}T00:00:00Z`);
+  next.setUTCDate(next.getUTCDate() + 1);
+  return next.toISOString().slice(0, 10);
+}
+
 function nights(checkIn, checkOut) {
   if (!checkIn || !checkOut) return 0;
   const ms = Date.parse(`${checkOut}T00:00:00Z`) - Date.parse(`${checkIn}T00:00:00Z`);
@@ -62,7 +68,9 @@ export default function bookingPage(roomId) {
     };
 
     form.check_in.addEventListener('change', () => {
-      form.check_out.min = form.check_in.value || today();
+      const earliest = form.check_in.value ? dayAfter(form.check_in.value) : today();
+      form.check_out.min = earliest;
+      if (form.check_out.value && form.check_out.value < earliest) form.check_out.value = earliest;
       updateTotal();
     });
     form.check_out.addEventListener('change', updateTotal);
