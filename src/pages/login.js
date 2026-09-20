@@ -56,7 +56,9 @@ export default function loginPage() {
     try {
       const { token, user } = await api(`/auth/${mode}`, { method: 'POST', body: payload });
       saveSession(token, user);
-      location.hash = '#/';
+      const next = sessionStorage.getItem('hrs.next');
+      sessionStorage.removeItem('hrs.next');
+      location.hash = `#${next || '/'}`;
     } catch (error) {
       draw(error.message);
     }

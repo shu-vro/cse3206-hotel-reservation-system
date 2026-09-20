@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { db } from '../db.js';
 import { requireAuth } from '../auth.js';
-import { checkDates, findClash, nightsBetween } from '../availability.js';
+import { cancellable, checkDates, findClash, nightsBetween } from '../availability.js';
 
 const router = Router();
 
@@ -65,6 +65,9 @@ router.post('/:id/cancel', requireAuth, (req, res) => {
   }
   if (booking.status === 'cancelled') {
     return res.status(409).json({ error: 'This booking is already cancelled.' });
+  }
+  if (!cancellable(booking.check_in)) {
+    return res.status(409).json({ error: 'The stay has already started, call the front desk.' });
   }
 
   db.prepare("update bookings set status = 'cancelled' where id = ?").run(booking.id);

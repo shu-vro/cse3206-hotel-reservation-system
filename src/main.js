@@ -27,6 +27,11 @@ function navLink(href, label, path) {
   return `<a href="#${href}" class="${path === href ? 'active' : ''}">${label}</a>`;
 }
 
+function menu(user, path) {
+  if (!user) return navLink('/login', 'Log in', path);
+  return `<span class="badge">${user.name}</span><button class="ghost" id="logout">Log out</button>`;
+}
+
 async function logout() {
   try {
     await api('/auth/logout', { method: 'POST' });
@@ -43,6 +48,7 @@ function render() {
   const route = resolve(path);
 
   if (route.auth && !user) {
+    sessionStorage.setItem('hrs.next', path);
     location.hash = '#/login';
     return;
   }
@@ -62,11 +68,7 @@ function render() {
         ${navLink('/', 'Rooms', path)}
         ${user ? navLink('/bookings', 'My bookings', path) : ''}
         ${user?.role === 'admin' ? navLink('/admin', 'Front desk', path) : ''}
-        ${
-          user
-            ? `<span class="badge">${user.name}</span><button class="ghost" id="logout">Log out</button>`
-            : navLink('/login', 'Log in', path)
-        }
+        ${menu(user, path)}
       </nav>
     </header>
     <main id="view"></main>
