@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { checkDates, findClash, nightsBetween } from './availability.js';
+import { cancellable, checkDates, findClash, nightsBetween } from './availability.js';
 
 function dbWithBooking(checkIn, checkOut, status = 'confirmed') {
   const db = new DatabaseSync(':memory:');
@@ -53,6 +53,12 @@ test('date rules', () => {
   assert.match(checkDates('2026-10-05', '2026-10-04', today), /at least one night/);
   assert.match(checkDates('05-10-2026', '2026-10-06', today), /YYYY-MM-DD/);
   assert.match(checkDates('2026-10-02', '2026-12-02', today), /30 nights/);
+});
+
+test('a stay can only be cancelled before it starts', () => {
+  assert.equal(cancellable('2026-10-05', '2026-10-01'), true);
+  assert.equal(cancellable('2026-10-01', '2026-10-01'), false);
+  assert.equal(cancellable('2026-09-28', '2026-10-01'), false);
 });
 
 test('nights are counted across month ends', () => {

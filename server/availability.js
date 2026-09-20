@@ -13,6 +13,10 @@ export function checkDates(checkIn, checkOut, today = new Date().toISOString().s
   return null;
 }
 
+export function cancellable(checkIn, today = new Date().toISOString().slice(0, 10)) {
+  return checkIn > today;
+}
+
 // Two stays clash only when they share a night. A guest checking out on the
 // same morning another checks in is fine, so the comparison stays strict.
 export function findClash(db, roomId, checkIn, checkOut, ignoreBookingId = 0) {
