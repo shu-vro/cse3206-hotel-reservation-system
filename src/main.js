@@ -41,6 +41,7 @@ function render() {
   const route = resolve(path);
 
   if (route.auth && !user) {
+    sessionStorage.setItem('hrs.next', path);
     location.hash = '#/login';
     return;
   }
