@@ -1,23 +1,24 @@
 import { api, clearSession, session } from './api.js';
 import loginPage from './pages/login.js';
 import roomsPage from './pages/rooms.js';
+import bookingPage from './pages/booking.js';
+import bookingsPage from './pages/bookings.js';
 
 const app = document.querySelector('#app');
 
 const routes = {
   '/': { render: roomsPage },
-  '/bookings': {
-    auth: true,
-    render: () => placeholder('My bookings', 'Booking list lands here once the booking module is ready.')
-  },
+  '/bookings': { auth: true, render: bookingsPage },
   '/login': { render: loginPage, guestOnly: true }
 };
 
-function placeholder(title, note) {
-  const el = document.createElement('div');
-  el.className = 'card';
-  el.innerHTML = `<h2>${title}</h2><p class="muted">${note}</p>`;
-  return el;
+function resolve(path) {
+  if (routes[path]) return routes[path];
+
+  const booking = path.match(/^\/book\/(\d+)$/);
+  if (booking) return { auth: true, render: () => bookingPage(Number(booking[1])) };
+
+  return routes['/'];
 }
 
 function navLink(href, label, path) {
@@ -37,7 +38,7 @@ async function logout() {
 function render() {
   const path = location.hash.slice(1) || '/';
   const { user } = session();
-  const route = routes[path] || routes['/'];
+  const route = resolve(path);
 
   if (route.auth && !user) {
     location.hash = '#/login';
