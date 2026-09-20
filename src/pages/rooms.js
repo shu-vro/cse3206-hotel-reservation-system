@@ -22,7 +22,7 @@ export default function roomsPage() {
       </div>
       <div class="field">
         <label for="guests">Guests</label>
-        <input id="guests" name="guests" type="number" min="1" max="6" placeholder="Any" />
+        <input id="guests" name="guests" type="number" min="1" max="6" placeholder="Any" style="width:110px" />
       </div>
       <div class="field">
         <label for="max_price">Max per night</label>
