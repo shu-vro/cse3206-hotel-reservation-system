@@ -68,13 +68,15 @@ export default function adminPage() {
         (booking) => booking.check_in <= today() && booking.check_out > today()
       );
       const arriving = live.filter((booking) => booking.check_in === today());
-      const earned = live.reduce((sum, booking) => sum + booking.total_price, 0);
+      const earned = live
+        .filter((booking) => booking.check_out >= today())
+        .reduce((sum, booking) => sum + booking.total_price, 0);
 
       stats.innerHTML = [
         tile('Rooms open', rooms.length, 'not archived'),
         tile('Occupied tonight', staying.length, `${rooms.length - staying.length} free`),
         tile('Arriving today', arriving.length, today()),
-        tile('Booked value', money(earned), 'confirmed stays')
+        tile('Booked value', money(earned), 'upcoming stays')
       ].join('');
 
       page.querySelectorAll('[data-filter]').forEach((button) => {
