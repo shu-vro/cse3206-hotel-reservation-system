@@ -16,3 +16,17 @@ create table if not exists rooms (
   description text not null default '',
   active integer not null default 1
 );
+
+create table if not exists bookings (
+  id integer primary key autoincrement,
+  room_id integer not null references rooms(id),
+  user_id integer not null references users(id),
+  check_in text not null,
+  check_out text not null,
+  guests integer not null,
+  total_price real not null,
+  status text not null default 'confirmed',
+  created_at text not null default (datetime('now'))
+);
+
+create index if not exists idx_bookings_room_dates on bookings (room_id, check_in, check_out);

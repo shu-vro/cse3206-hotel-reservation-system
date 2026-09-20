@@ -298,3 +298,35 @@ button.ghost:active {
   font-size: 0.9rem;
   padding: 8px 0;
 }
+
+.table-wrap {
+  overflow-x: auto;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.92rem;
+}
+
+th {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  text-align: left;
+  background: var(--paper-dim);
+  border-bottom: var(--line);
+  padding: 10px 14px;
+}
+
+td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(27, 26, 23, 0.15);
+  vertical-align: top;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
